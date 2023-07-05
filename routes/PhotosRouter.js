@@ -26,19 +26,31 @@ const upload = multer({
 });
 
 PhotosRouter.route('/')
-.get((request, response) => {
-    db.photo
-    .findAll()
-    .then((photos) => {
-        console.log("GET Images")
-        response.redirect('/')
+    .get((request, response) => {
+        db.photo
+            .findAll()
+            .then((photos) => {
+                console.log("GET Images")
+                response.redirect('/')
+            })
+            .catch((error) => {
+                response.send(error)
+            })
     })
-    .catch((error) => {
-        response.send(error)
-    })
-})
 
 PhotosRouter.route('/')
-.post(upload.single("photo"), (request, response)=>{
-    const title = request.body.title
-})
+    .post(upload.single("photo"), (request, response)=>{
+        const title = request.body.title
+        const mediaLocation = request.file.filename;
+        db.photo
+        .create({title: title, mediaLocation: mediaLocation})
+        .then((photo)=> {
+            console.log("POST Images");
+            response.send(photo);
+        })
+        .catch((error) => {
+            response.send(error)
+        })
+    })
+
+module.exports = PhotosRouter;
