@@ -46,11 +46,22 @@ const fileStorageEngine = multer.diskStorage({
         .create({title: title, mediaLocation: mediaLocation})
         .then((photo)=> {
             console.log("POST IMAGES");
-            response.send(photo);
+            //response.send(photo);
+            response.redirect('/');
         })
         .catch((error) => {
             response.send(error)
         })
     })
+PhotosRouter.route("/:photoId")
+    .get(upload.single("photo"), (request, response) => {
+        const photoId = request.params.photoId
+        db.comment.findAll({where: {photoId: photoId}.then((comment) =>{
+            response.send(comment);
+        }).catch((error) => {
+            response.send(error)
+        })
+    })
+})
 
   module.exports = PhotosRouter;
